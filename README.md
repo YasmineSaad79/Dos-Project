@@ -1,5 +1,4 @@
-# 📚 Distributed Operating System Course Project  
-## 🧩 Microservices Architecture
+# 📚 Bookstore Microservices System 
 
 This project demonstrates a simple microservices-based bookstore system using **Node.js**, **Express**, **SQLite**, and **Docker**.  
 It’s designed for educational purposes under the **Distributed Operating Systems** course.
