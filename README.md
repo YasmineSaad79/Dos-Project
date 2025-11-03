@@ -15,7 +15,7 @@ It’s designed for educational purposes under the **Distributed Operating Syste
 |-----------------|-------|----------------------------------------------|
 | Catalog Service | 5001  | Manages books catalog (search, info, reserve)|
 | Order Service   | 5002  | Handles book purchases and order storage     |
-| Front-end       | 80    | (Optional) UI served via Nginx               |
+| Front-end       | 5000  | Receives user requests (search/info/purchase) and routes them to backend |
 
 Each service is isolated and communicates over REST APIs.
 
