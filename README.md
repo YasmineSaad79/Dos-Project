@@ -7,13 +7,6 @@ It’s designed for educational purposes under the **Distributed Operating Syste
 ![Architecture](./images/Microservices-architecture-diagram.png)
 ---
 
-### 🗂️ Services Overview
-
-| Service         | Port  | Description                                  |
-|-----------------|-------|----------------------------------------------|
-| Catalog Service | 5001  | Manages books catalog (search, info, reserve)|
-| Order Service   | 5002  | Handles book purchases and order storage     |
-| Front-end       | 80    | (Optional) UI served via Nginx               |
 
 
 ### 🗂️ Services Overview
