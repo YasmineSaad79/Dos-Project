@@ -22,29 +22,32 @@ Each service is isolated and communicates over REST APIs.
 
 ---
 ### 🏗️ Project Structure
-/Dos-Project
 
+```
+/Dos-Project
 │
 ├── catalog-service/
-│ ├── catalog.js
-│ └── data/
-│ └── catalog.db
+│   ├── catalog.js
+│   └── data/
+│       └── catalog.db
 │
 ├── order-service/
-│ ├── order.js
-│ └── data/
-│ └── orders.db
+│   ├── order.js
+│   └── data/
+│       └── orders.db
 │
 ├── docker-compose.yml
 │
 ├── nginx/
-│ └── default.conf
+│   └── default.conf
 │
 ├── images/
-│ └── Microservices-architecture-diagram.png
+│   └── Microservices-architecture-diagram.png
 │
 ├── Dos-Project.postman_collection.json
 └── README.md
+```
+
 ---
 
 ### ⚙️ Prerequisites
