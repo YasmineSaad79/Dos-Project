@@ -4,7 +4,10 @@
 This project demonstrates a simple microservices-based bookstore system using **Node.js**, **Express**, **SQLite**, and **Docker**.  
 It’s designed for educational purposes under the **Distributed Operating Systems** course.
 
-![Architecture](./images/Microservices-architecture-diagram.png)
+<p align="center">
+  <img src="./images/Microservices-architecture-diagram.png" alt="Architecture" width="600"/>
+</p>
+
 
 ---
 
