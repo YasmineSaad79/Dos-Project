@@ -5,23 +5,20 @@ This project demonstrates a simple microservices-based bookstore system using **
 It’s designed for educational purposes under the **Distributed Operating Systems** course.
 
 ![Architecture](./images/Microservices-architecture-diagram.png)
+
 ---
-
-
 
 ### 🗂️ Services Overview
 
-| Service         | Port  | Description                                  |
-|-----------------|-------|----------------------------------------------|
-| Catalog Service | 5001  | Manages books catalog (search, info, reserve)|
-| Order Service   | 5002  | Handles book purchases and order storage     |
-| Front-end       | 5000  | Receives user requests (search/info/purchase) and routes them to backend |
+| Service         | Port  | Description                                                   |
+|-----------------|-------|---------------------------------------------------------------|
+| Catalog Service | 5001  | Manages books catalog (search, info, reserve, update)         |
+| Order Service   | 5002  | Handles book purchases and order storage                     |
+| Client Service  | 5000  | Receives user requests and routes them to the backend services|
 
-Each service is isolated and communicates over REST APIs.
-
+Each service is isolated and communicates via REST APIs.
 
 ---
-### 🏗️ Project Structure
 
 ### 🏗️ Project Structure
 
@@ -31,16 +28,19 @@ Each service is isolated and communicates over REST APIs.
 ├── src/
 │   ├── catalog-service/
 │   │   ├── index.js
+│   │   ├── Dockerfile
 │   │   └── data/
 │   │       └── catalog.db
 │   │
 │   ├── order-service/
 │   │   ├── index.js
+│   │   ├── Dockerfile
 │   │   └── data/
 │   │       └── orders.db
 │   │
 │   ├── client-service/
 │   │   ├── index.js
+│   │   ├── Dockerfile
 │   │   └── ... (client UI files or APIs)
 │
 ├── images/
@@ -53,19 +53,6 @@ Each service is isolated and communicates over REST APIs.
 └── README.md
 ```
 
-
-
----
-
-### ⚙️ Prerequisites
-
-- Git & GitHub  
-- SQLite3 Database  
-- Docker & Docker Compose  
-- Nginx  
-- Node.js & Express  
-- Postman
-
 ---
 
 ### ⚙️ Prerequisites
@@ -73,206 +60,141 @@ Each service is isolated and communicates over REST APIs.
 - ✅ Git & GitHub  
 - ✅ Node.js & npm  
 - ✅ SQLite3  
-- ✅ Postman (for testing endpoints)  
+- ✅ Postman (for API testing)  
 - ✅ Docker & Docker Compose  
-- ✅ Nginx (optional for UI)
+- ✅ Nginx *(optional for front-end hosting)*
 
 ---
 
 ### 🚀 How to Run Locally (without Docker)
 
-1. **Clone the repo:**
+1. **Clone the repository**
 ```bash
 git clone https://github.com/YasmineSaad79/Dos-Project.git
 cd Dos-Project
 ```
 
-2. **Install dependencies for each service:**
+2. **Start services manually**
 
 ```bash
+# Catalog Service
 cd src/catalog-service
 npm install
 node index.js
+# Runs on http://localhost:5001
 ```
-
-> 📘 The Catalog Service will start on **http://localhost:5001**
-
-Open a **new terminal** and run:
 
 ```bash
-cd ../order-service
+# Order Service (in new terminal)
+cd src/order-service
 npm install
 node index.js
+# Runs on http://localhost:5002
 ```
-
-> 📗 The Order Service will start on **http://localhost:5002**
-
-Then open another **new terminal** and run:
 
 ```bash
-cd ../client-service
+# Client Service (in new terminal)
+cd src/client-service
 npm install
 node index.js
+# Runs on http://localhost:5000
 ```
-
-> 📙 The Client Service will start on **http://localhost:5000**
 
 ---
 
-### 🧪 Testing the System with Postman
+### 🐳 How to Run with Docker Compose
 
-You can test all endpoints using **Postman** (or curl).  
-Below are the main endpoints to verify functionality:
+> Ensure Docker and Docker Compose are installed on your machine.
 
-#### 🟦 Catalog Service (Port 5001)
+1. **Clone and enter the project**
+```bash
+git clone https://github.com/YasmineSaad79/Dos-Project.git
+cd Dos-Project
+```
 
-| Method | Endpoint | Description |
-|--------|-----------|-------------|
-| GET | `/search/:topic` | Search for books by topic (e.g. distributed, undergrad) |
-| GET | `/info/:id` | Get book details (title, price, quantity) |
-| POST | `/reserve/:id` | Reserve one copy of a book |
-| PUT | `/update/:id` | Update book price or quantity |
+2. **Build and start all services**
+```bash
+docker-compose up --build
+```
 
-#### 🟩 Order Service (Port 5002)
+3. **Check running containers**
+```bash
+docker ps
+```
 
-| Method | Endpoint | Description |
-|--------|-----------|-------------|
-| POST | `/purchase/:id` | Purchase a book (reserves and records order) |
-| GET | `/health` | Check order service status |
+Expected services:
+- `dos-project_catalog-service_1`
+- `dos-project_order-service_1`
+- `dos-project_client-service_1`
 
-#### 🟧 Client Service (Port 5000)
+4. **Stop all containers**
+```bash
+docker-compose down
+```
 
-| Method | Endpoint | Description |
-|--------|-----------|-------------|
-| GET | `/search/:topic` | Search books via client interface |
-| GET | `/info/:id` | View detailed info about a book |
-| GET | `/purchase/:id` | Purchase a book via client interface |
+---
+
+### 📡 API Endpoints Summary
+
+#### 🟦 Catalog Service — `http://localhost:5001`
+
+| Method | Endpoint          | Description                            |
+|--------|-------------------|----------------------------------------|
+| GET    | `/search/:topic`  | Search books by topic                  |
+| GET    | `/info/:id`       | Get book details                       |
+| POST   | `/reserve/:id`    | Reserve a book                         |
+| PUT    | `/update/:id`     | Update book price/quantity             |
+
+#### 🟩 Order Service — `http://localhost:5002`
+
+| Method | Endpoint          | Description                            |
+|--------|-------------------|----------------------------------------|
+| POST   | `/purchase/:id`   | Purchase and store order               |
+| GET    | `/health`         | Health check                           |
+
+#### 🟧 Client Service — `http://localhost:5000`
+
+| Method | Endpoint          | Description                            |
+|--------|-------------------|----------------------------------------|
+| GET    | `/search/:topic`  | Client-side search                     |
+| GET    | `/info/:id`       | View book details from UI              |
+| GET    | `/purchase/:id`   | Trigger book purchase from client      |
 
 ---
 
 ### ✅ Expected Behavior
 
-1. Searching a topic (e.g. `distributed`) lists matching books.  
-2. Viewing book info (`/info/:id`) shows stock quantity and price.  
-3. Purchasing a book (`/purchase/:id`) decreases stock in the catalog database.  
-4. Each purchase creates a new record in the `orders.db` database.  
-5. All services log activity in the console for debugging and verification.
-
----
-### 🐳 How to Run with Docker Compose
-
-> Make sure Docker and Docker Compose are installed on your machine.
+- Searching a topic lists all matching books.
+- Viewing book info shows stock and price.
+- Reserving or purchasing a book decreases available quantity.
+- Order Service records all purchases into its own database.
+- Console logs confirm all requests for debugging.
 
 ---
 
-#### 1. **Clone the repository:**
+### 🗑️ Resetting Databases (Optional)
+
+If needed, you can reinitialize the databases by deleting them manually:
+
 ```bash
-git clone https://github.com/YasmineSaad79/Dos-Project.git
-cd Dos-Project
+rm src/catalog-service/data/catalog.db
+rm src/order-service/data/orders.db
 ```
+
+Then re-run the services to auto-generate new databases.
 
 ---
 
-#### 2. **Build and start the containers:**
-```bash
-docker-compose up --build
-```
+### 🧭 Notes
 
-This will:
-
-- Start **Catalog Service** at `http://localhost:5001`
-- Start **Order Service** at `http://localhost:5002`
-- Start **Client Service** at `http://localhost:5000`
+- Each service must be reading `PORT` from `process.env.PORT` or default fallback.
+- Logs are printed to terminal for request tracing and debugging.
 
 ---
 
-#### 3. **Check running containers:**
-```bash
-docker ps
-```
+### 📋 Author
 
-You should see three running services:
-- `dos-project_catalog-service_1`
-- `dos-project_order-service_1`
-- `dos-project_client-service_1`
-
----
-
-#### 4. **Test the services:**
-
-Use Postman or your browser:
-
-| Service | Base URL | Example Endpoint |
-|---------|----------|------------------|
-| Catalog | `http://localhost:5001` | `/search/distributed` |
-| Order   | `http://localhost:5002` | `/purchase/123` |
-| Client  | `http://localhost:5000` | `/purchase/123` |
-
----
-
-#### 5. **Stop and remove containers:**
-```bash
-docker-compose down
-```
-
-This command stops all services and removes the containers.
-
----
-
-### 🗂️ Dockerfile Locations
-
-Each service has its own Dockerfile located inside the `src/` folder:
-
-```
-src/
-├── catalog-service/
-│   └── Dockerfile
-├── order-service/
-│   └── Dockerfile
-├── client-service/
-│   └── Dockerfile
-```
-
----
-
-### 📝 docker-compose.yml Overview
-
-The main `docker-compose.yml` file defines the three services, sets their ports, and builds each one from its respective subdirectory.
-
-```yaml
-services:
-  catalog-service:
-    build: ./src/catalog-service
-    ports:
-      - "5001:5001"
-
-  order-service:
-    build: ./src/order-service
-    ports:
-      - "5002:5002"
-
-  client-service:
-    build: ./src/client-service
-    ports:
-      - "5000:5000"
-```
-
-
-### 🧰 Stopping the Services
-
-To stop all services, press:
-```bash
-Ctrl + C
-```
-in each terminal window.
-
----
-
-### 🧭 Optional: Reinitialize Databases
-
-If you want to reset the databases:
-- Delete `src/catalog-service/data/catalog.db`
-- Delete `src/order-service/data/orders.db`
-Then rerun the services to auto-generate fresh databases.
+**Yasmine Saad, Afaf Nasr**  
+Distributed Operating Systems – An-Najah National University  
 
 
