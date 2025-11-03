@@ -65,7 +65,6 @@ Each service is isolated and communicates via REST APIs.
 - ✅ SQLite3  
 - ✅ Postman (for API testing)  
 - ✅ Docker & Docker Compose  
-- ✅ Nginx *(optional for front-end hosting)*
 
 ---
 
