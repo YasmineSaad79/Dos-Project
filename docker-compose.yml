@@ -1,0 +1,117 @@
+version: "3.9"
+
+services:
+  # 📚 Catalog Replica 1
+  catalog-service-1:
+    build: ./src/catalog-service
+    container_name: catalog-service-1
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - DATA_DIR=/app/data
+      - INSTANCE_NAME=1
+      - FRONTEND_URL=http://client-service:5000
+      - CATALOG_REPLICAS=http://catalog-service-1:5001,http://catalog-service-2:5001
+    volumes:
+      - ./src/catalog-service/data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # 📚 Catalog Replica 2
+  catalog-service-2:
+    build: ./src/catalog-service
+    container_name: catalog-service-2
+    ports:
+      - "5011:5001"
+    environment:
+      - PORT=5001
+      - DATA_DIR=/app/data
+      - INSTANCE_NAME=2
+      - FRONTEND_URL=http://client-service:5000
+      - CATALOG_REPLICAS=http://catalog-service-1:5001,http://catalog-service-2:5001
+    volumes:
+      - ./src/catalog-service/data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # 🛒 Order Replica 1
+  order-service-1:
+    build: ./src/order-service
+    container_name: order-service-1
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+      - DATA_DIR=/app/data
+      - INSTANCE_NAME=1
+      - FRONTEND_URL=http://client-service:5000
+      - CATALOG_REPLICAS=http://catalog-service-1:5001,http://catalog-service-2:5001
+    depends_on:
+      catalog-service-1:
+        condition: service_healthy
+    volumes:
+      - ./src/order-service/data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5002/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # 🛒 Order Replica 2
+  order-service-2:
+    build: ./src/order-service
+    container_name: order-service-2
+    ports:
+      - "5012:5002"
+    environment:
+      - PORT=5002
+      - DATA_DIR=/app/data
+      - INSTANCE_NAME=2
+      - FRONTEND_URL=http://client-service:5000
+      - CATALOG_REPLICAS=http://catalog-service-1:5001,http://catalog-service-2:5001
+    depends_on:
+      catalog-service-2:
+        condition: service_healthy
+    volumes:
+      - ./src/order-service/data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5002/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # 🔴 Redis Cache
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  # 🌐 Client / Front-End Service
+  client-service:
+    build: ./src/client-service
+    container_name: client-service
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - CATALOG_REPLICAS=http://catalog-service-1:5001,http://catalog-service-2:5001
+      - ORDER_REPLICAS=http://order-service-1:5002,http://order-service-2:5002
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  catalog_data:
+  orders_data:
